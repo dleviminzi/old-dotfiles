@@ -50,7 +50,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
-Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -59,11 +58,11 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'alvan/vim-closetag'
 Plug 'preservim/nerdcommenter'
 Plug 'tomasr/molokai'
-Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
 call plug#end()
 
 " ale settings
@@ -148,20 +147,32 @@ nmap <silent> gy <Plug>(coc-type-definition)
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-nmap <leader>rn <Plug>(coc-rename)
+nmap <C-r> <Plug>(coc-rename)
 
 " Find files using Telescope command-line sugar.
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap fb <cmd>lua require('telescope.builtin').file_browser()<cr>
+nnoremap ff <cmd> lua require('telescope.builtin').find_files() <cr>
+nnoremap fg <cmd> lua require('telescope.builtin').live_grep() <cr>
+nnoremap fb <cmd> lua require("telescope").extensions.file_browser.file_browser() <cr>
+nnoremap ft <cmd> lua require('telescope.builtin').buffers() <cr>
+nnoremap fh <cmd> lua require('telescope.builtin').help_tags() <cr>
 
 " close tag
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js,*.ts'
 
 " treesitter
 :lua <<EOF
+require("telescope").setup {
+    extensions = {
+        file_browser = {
+        },
+    },
+}
+require("telescope").load_extension "file_browser"
+require'nvim-treesitter.configs'.setup {
+    highlight = {
+        enable = true,
+    },
+}
 require'nvim-treesitter.configs'.setup {
   highlight = {
 	enable = true,              
